@@ -56,7 +56,7 @@ pip install Pillow PyPDF2
 ### 📝 Usage
 
 ```bash
-python converter.py
+python PDFConverter/converter.py
 ```
 
 **Steps:**
@@ -180,7 +180,7 @@ pip install Pillow PyPDF2
 ### 📝 Kullanım
 
 ```bash
-python converter.py
+python PDFConverter/converter.py
 ```
 
 **Adımlar:**
