@@ -1,272 +1,207 @@
-# 🔄 PDF Converter
+# PDFConverter
 
-<div align="center">
+A small desktop utility for converting images and office documents to PDF through a simple Tkinter file picker.
 
-![Python](https://img.shields.io/badge/Python-3.7+-blue.svg)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
-![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)
-![Version](https://img.shields.io/badge/Version-1.0-orange.svg)
+PDFConverter keeps the workflow intentionally simple:
 
-**A powerful and easy-to-use tool for converting multiple file formats to PDF**
+1. Select one or more files.
+2. Enter an output name.
+3. The resulting PDF is saved to your desktop.
 
-[English](#english) | [Türkçe](#turkish)
+## Features
 
-</div>
+- Convert PNG, JPG, JPEG, BMP, and GIF images directly with Pillow.
+- Convert office and document formats through LibreOffice.
+- Merge multiple converted documents into one PDF.
+- Preserve the order in which files were selected.
+- Run on Windows, macOS, and Linux.
+- Use a native file picker instead of requiring command-line arguments.
+- Keep temporary LibreOffice output isolated from your source files.
 
----
+## Requirements
 
-<a name="english"></a>
-## 🇬🇧 English
+- Python 3.7+
+- Tkinter
+- Pillow
+- PyPDF2
+- LibreOffice for non-image conversion
 
-### 📖 Overview
+Tkinter is bundled with many Python distributions. On Linux, it may need to be installed separately through your distribution's package manager.
 
-PDF Converter is a cross-platform desktop application that allows you to convert various document and image formats into PDF files. With its intuitive GUI interface, you can easily convert single or multiple files and merge them into one PDF document.
+## Installation
 
-### ✨ Features
-
-- 🖼️ **Image to PDF**: Convert PNG, JPG, JPEG, BMP, GIF images to PDF
-- 📄 **Document to PDF**: Convert DOC, DOCX, XLS, XLSX, PPT, PPTX, ODT, and more via LibreOffice
-- 🔗 **Multi-file Merge**: Combine multiple files into a single PDF
-- 💻 **Cross-platform**: Works on Windows, macOS, and Linux
-- 🎯 **Simple Interface**: Easy-to-use GUI with file picker
-- 📥 **Desktop Output**: Automatically saves to your desktop
-- 🌐 **Turkish Interface**: Built-in Turkish language support
-
-### 🚀 Installation
-
-#### Prerequisites
-
-1. **Python 3.7 or higher**
-2. **LibreOffice** (for document conversion)
-   - Windows: Download from [LibreOffice.org](https://www.libreoffice.org/)
-   - macOS: `brew install --cask libreoffice`
-   - Linux: `sudo apt-get install libreoffice` (Ubuntu/Debian)
-
-#### Install Dependencies
+Clone the repository:
 
 ```bash
-# Clone the repository
 git clone https://github.com/emillvl/pdfconverter.git
 cd pdfconverter
-
-# Install required Python packages
-pip install Pillow PyPDF2
 ```
 
-### 📝 Usage
+Install the Python dependencies:
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+For document conversion, install LibreOffice as well.
+
+### Windows
+
+Install LibreOffice from its official installer. PDFConverter checks common LibreOffice installation locations and also accepts `soffice` or `libreoffice` when available on `PATH`.
+
+### macOS
+
+A common installation method is:
+
+```bash
+brew install --cask libreoffice
+```
+
+The application also checks the standard LibreOffice application path under `/Applications`.
+
+### Ubuntu / Debian
+
+```bash
+sudo apt update
+sudo apt install libreoffice python3-tk
+```
+
+Other Linux distributions can install the equivalent LibreOffice and Tk packages through their package manager.
+
+## Usage
+
+Run:
 
 ```bash
 python PDFConverter/converter.py
 ```
 
-**Steps:**
-1. Run the script
-2. Click "OK" on the welcome message
-3. Select one or more files to convert
-4. Enter a name for your PDF file
-5. Find your converted PDF on the desktop!
+The application will:
 
-### 📦 Supported Formats
+1. Open a file-selection dialog.
+2. Ask for the output PDF name.
+3. Save the result to the detected desktop directory.
 
-#### Images
-- PNG, JPG, JPEG, BMP, GIF
+If no desktop directory can be detected, PDFConverter falls back to the user's home directory.
 
-#### Documents (requires LibreOffice)
-- Microsoft Office: DOC, DOCX, XLS, XLSX, PPT, PPTX
-- OpenDocument: ODT, ODS, ODP
-- Rich Text: RTF
-- And many more formats supported by LibreOffice
+## Conversion behavior
 
-### 🛠️ Requirements
+### Images
 
-```
-Python >= 3.7
-Pillow >= 8.0.0
-PyPDF2 >= 2.0.0
-tkinter (usually included with Python)
-LibreOffice (for non-image files)
-```
+If every selected input is one of the supported image formats, PDFConverter uses Pillow directly and does not require LibreOffice.
 
-### 💡 Examples
+Supported image extensions:
 
-**Convert multiple images to one PDF:**
-```
-Select: image1.png, image2.jpg, image3.png
-Output: MyPhotos.pdf (on desktop)
-```
+- `.png`
+- `.jpg`
+- `.jpeg`
+- `.bmp`
+- `.gif`
 
-**Convert Word documents:**
-```
-Select: report.docx, presentation.pptx
-Output: Documents.pdf (merged into one)
-```
+Images are converted to RGB and written to a single PDF in selection order.
 
-### 🐛 Troubleshooting
+### Documents
 
-**"LibreOffice not found" error:**
-- Make sure LibreOffice is installed
-- Windows: Check if installed in `C:\Program Files\LibreOffice`
-- macOS: Check if installed in `/Applications/LibreOffice.app`
-- Linux: Run `which soffice` to verify installation
+If any selected file is not one of the supported image extensions, PDFConverter uses LibreOffice for the conversion flow.
 
-**"PyPDF2 required" warning:**
-- Install PyPDF2: `pip install PyPDF2`
-- Required only for merging multiple non-image files
+LibreOffice determines which document formats are actually convertible. Typical examples include:
 
-### 📄 License
+- DOC / DOCX
+- XLS / XLSX
+- PPT / PPTX
+- ODT / ODS / ODP
+- RTF
 
-Copyright © 2025 Emil Veliyev. All rights reserved.
+Each source file is converted inside its own temporary directory. This prevents same-named input files from overwriting one another and avoids modifying or deleting PDFs beside the original source files.
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+When multiple converted PDFs are produced, PyPDF2 merges them in the original selection order.
 
-### 👨‍💻 Author
+## Important limitations
 
-**Emil Veliyev** - [@emillvl](https://github.com/emillvl)
+- A mixed selection of images and documents is handled through LibreOffice rather than the direct Pillow image path.
+- Conversion fidelity for office documents depends on LibreOffice and the fonts available on the machine.
+- Password-protected, corrupted, unsupported, or unusually structured files may fail to convert.
+- The current GUI is Turkish-language.
+- The application does not recursively convert folders.
 
-### 🤝 Contributing
+## Troubleshooting
 
-Contributions, issues, and feature requests are welcome!
+### LibreOffice could not be found
 
-1. Fork the project
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+Confirm that LibreOffice is installed and can be launched normally.
 
-### ⭐ Show Your Support
-
-Give a ⭐ if this project helped you!
-
----
-
-<a name="turkish"></a>
-## 🇹🇷 Türkçe
-
-### 📖 Genel Bakış
-
-PDF Dönüştürücü, çeşitli belge ve resim formatlarını PDF dosyalarına dönüştürmenizi sağlayan platformlar arası bir masaüstü uygulamasıdır. Sezgisel GUI arayüzü ile tek veya birden fazla dosyayı kolayca dönüştürebilir ve bunları tek bir PDF belgesinde birleştirebilirsiniz.
-
-### ✨ Özellikler
-
-- 🖼️ **Resimden PDF'e**: PNG, JPG, JPEG, BMP, GIF resimlerini PDF'e dönüştürün
-- 📄 **Belgeden PDF'e**: DOC, DOCX, XLS, XLSX, PPT, PPTX, ODT ve daha fazlasını LibreOffice ile dönüştürün
-- 🔗 **Çoklu Dosya Birleştirme**: Birden fazla dosyayı tek bir PDF'de birleştirin
-- 💻 **Platformlar Arası**: Windows, macOS ve Linux'ta çalışır
-- 🎯 **Basit Arayüz**: Dosya seçici ile kullanımı kolay GUI
-- 📥 **Masaüstü Çıktısı**: Otomatik olarak masaüstüne kaydeder
-- 🌐 **Türkçe Arayüz**: Yerleşik Türkçe dil desteği
-
-### 🚀 Kurulum
-
-#### Ön Gereksinimler
-
-1. **Python 3.7 veya üzeri**
-2. **LibreOffice** (belge dönüştürme için)
-   - Windows: [LibreOffice.org](https://tr.libreoffice.org/)'dan indirin
-   - macOS: `brew install --cask libreoffice`
-   - Linux: `sudo apt-get install libreoffice` (Ubuntu/Debian)
-
-#### Bağımlılıkları Yükleyin
+You can also check whether its command is available:
 
 ```bash
-# Depoyu klonlayın
-git clone https://github.com/emillvl/pdfconverter.git
-cd pdfconverter
-
-# Gerekli Python paketlerini yükleyin
-pip install Pillow PyPDF2
+soffice --version
 ```
 
-### 📝 Kullanım
+or:
 
 ```bash
-python PDFConverter/converter.py
+libreoffice --version
 ```
 
-**Adımlar:**
-1. Betiği çalıştırın
-2. Hoş geldiniz mesajında "Tamam"a tıklayın
-3. Dönüştürülecek bir veya daha fazla dosya seçin
-4. PDF dosyanız için bir isim girin
-5. Dönüştürülmüş PDF'inizi masaüstünde bulun!
+On Windows, the executable is commonly located under:
 
-### 📦 Desteklenen Formatlar
-
-#### Resimler
-- PNG, JPG, JPEG, BMP, GIF
-
-#### Belgeler (LibreOffice gerektirir)
-- Microsoft Office: DOC, DOCX, XLS, XLSX, PPT, PPTX
-- OpenDocument: ODT, ODS, ODP
-- Zengin Metin: RTF
-- LibreOffice tarafından desteklenen daha birçok format
-
-### 🛠️ Gereksinimler
-
-```
-Python >= 3.7
-Pillow >= 8.0.0
-PyPDF2 >= 2.0.0
-tkinter (genellikle Python ile birlikte gelir)
-LibreOffice (resim olmayan dosyalar için)
+```text
+C:\Program Files\LibreOffice\program\soffice.exe
 ```
 
-### 💡 Örnekler
+### Tkinter is missing
 
-**Birden fazla resmi tek PDF'e dönüştürme:**
-```
-Seçim: resim1.png, resim2.jpg, resim3.png
-Çıktı: Fotograflarim.pdf (masaüstünde)
-```
+On Ubuntu or Debian:
 
-**Word belgelerini dönüştürme:**
-```
-Seçim: rapor.docx, sunum.pptx
-Çıktı: Belgeler.pdf (tek dosyada birleştirilmiş)
+```bash
+sudo apt install python3-tk
 ```
 
-### 🐛 Sorun Giderme
+For other platforms, use the Tk package appropriate for your Python installation.
 
-**"LibreOffice Bulunamadı" hatası:**
-- LibreOffice'in yüklü olduğundan emin olun
-- Windows: `C:\Program Files\LibreOffice` konumunu kontrol edin
-- macOS: `/Applications/LibreOffice.app` konumunu kontrol edin
-- Linux: Kurulumu doğrulamak için `which soffice` komutunu çalıştırın
+### Multiple documents do not merge
 
-**"PyPDF2 Gerekli" uyarısı:**
-- PyPDF2'yi yükleyin: `pip install PyPDF2`
-- Yalnızca birden fazla belge dosyasını birleştirmek için gereklidir
+Reinstall the Python dependencies:
 
-### 📄 Lisans
+```bash
+python -m pip install -r requirements.txt
+```
 
-Telif Hakkı © 2025 Emil Veliyev. Tüm hakları saklıdır.
+PyPDF2 is required when multiple LibreOffice-generated PDFs need to be merged.
 
-Bu proje MIT Lisansı altında lisanslanmıştır - detaylar için [LICENSE](LICENSE) dosyasına bakın.
+### Output is not on the desktop
 
-### 👨‍💻 Yazar
+PDFConverter uses the configured desktop location when it can detect one. If no valid desktop directory is available, it saves to the user's home directory instead.
 
-**Emil Veliyev** - [@emillvl](https://github.com/emillvl)
+## Project structure
 
-### 🤝 Katkıda Bulunma
+```text
+pdfconverter/
+├── PDFConverter/
+│   └── converter.py
+├── LICENSE
+├── README.md
+└── requirements.txt
+```
 
-Katkılar, sorunlar ve özellik istekleri memnuniyetle karşılanır!
+## Development notes
 
-1. Projeyi fork'layın
-2. Özellik dalınızı oluşturun (`git checkout -b feature/HarikaOzellik`)
-3. Değişikliklerinizi commit edin (`git commit -m 'Harika bir özellik ekle'`)
-4. Dalınıza push yapın (`git push origin feature/HarikaOzellik`)
-5. Bir Pull Request açın
+The project deliberately remains lightweight. The conversion logic is contained in a single Python module, while external document rendering is delegated to LibreOffice.
 
-### ⭐ Desteğinizi Gösterin
+When changing conversion behavior, useful regression cases include:
 
-Bu proje size yardımcı olduysa bir ⭐ verin!
+- one image
+- multiple images
+- one office document
+- multiple office documents
+- two files with the same basename from different directories
+- a source directory that already contains a PDF with the same basename
+- LibreOffice missing
+- PyPDF2 missing during a multi-document merge
 
----
+## License
 
-<div align="center">
+PDFConverter is licensed under the MIT License. See [LICENSE](LICENSE).
 
-**Made by Emil Veliyev**
+## Author
 
-[![GitHub](https://img.shields.io/badge/GitHub-emillvl-181717?style=for-the-badge&logo=github)](https://github.com/emillvl)
-
-</div>
+Emil Veliyev — [@emillvl](https://github.com/emillvl)
