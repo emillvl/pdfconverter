@@ -1,8 +1,6 @@
 # PDFConverter
 
-A small desktop utility for converting images and office documents to PDF through a simple Tkinter file picker.
-
-PDFConverter keeps the workflow intentionally simple:
+PDFConverter converts images and office documents to PDF. A Tkinter file picker guides you through three steps:
 
 1. Select one or more files.
 2. Enter an output name.
@@ -116,7 +114,9 @@ Each source file is converted inside its own temporary directory. This prevents 
 
 When multiple converted PDFs are produced, PyPDF2 merges them in the original selection order.
 
-## Important limitations
+## Limitations
+
+- The output filename is used without an overwrite confirmation. Choose a new name if a PDF with that name already exists in the destination folder.
 
 - A mixed selection of images and documents is handled through LibreOffice rather than the direct Pillow image path.
 - Conversion fidelity for office documents depends on LibreOffice and the fonts available on the machine.
@@ -185,7 +185,7 @@ pdfconverter/
 
 ## Development notes
 
-The project deliberately remains lightweight. The conversion logic is contained in a single Python module, while external document rendering is delegated to LibreOffice.
+The conversion logic lives in `PDFConverter/converter.py`. LibreOffice renders office documents.
 
 When changing conversion behavior, useful regression cases include:
 
@@ -204,4 +204,4 @@ PDFConverter is licensed under the MIT License. See [LICENSE](LICENSE).
 
 ## Author
 
-Emil Veliyev — [@emillvl](https://github.com/emillvl)
+Emil Veliyev · [@emillvl](https://github.com/emillvl)
